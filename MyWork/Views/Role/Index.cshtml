@@ -1,0 +1,66 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>角色管理</title>
+    <script>
+        function Add() {
+            window.open("/Role/Add")
+        }
+    </script>
+</head>
+<body>
+    <form action="~/Role/Index" method="post">
+        <div style="display:inline-block">
+            <div style="display:inline-block">
+                <label>角色名：</label><input type="text" name="Name" />
+            </div>
+            <div style="display:inline-block">
+                <label>创建时间：</label><input type="datetime" name="CreateTimeFrom" />--<input type="datetime" name="CreateTimeTo" />
+            </div>
+            <div style="display:inline-block">
+                <label>是否软删除：</label><label>已删除</label><input type="radio" value="true" name="IsDeleted" /><label>未删除</label><input type="radio" value="false" name="IsDeleted" checked />
+            </div>
+            <div style="display:inline-block">
+                <input type="submit" value="查询" />
+                <input type="button" value="新增" onclick="Add()" />
+            </div>
+        </div>
+    </form>
+    <table>
+        <tr>
+            <td>角色id</td>
+            <td>角色名字</td>
+            <td>角色描述</td>
+            <td>创建时间</td>
+            <td>删除标记</td>
+            <td>真删除</td>
+            <td>软删除</td>
+            <td>修改</td>
+            <td>权限查询</td>
+        </tr>
+        @{
+            if (Model != null)
+            {
+                foreach (var role in Model)
+                {
+                    <tr>
+                        <td>@role.Id</td>
+                        <td>@role.Name</td>
+                        <td>@role.Describe</td>
+                        <td>@role.CreateTime</td>
+                        <td>@role.IsDeleted</td>
+                        <td><a href="/Role/Delete?Id=@role.Id">真删除</a></td>
+                        <td><a href="/Role/MaskDelete?Id=@role.Id">软删除</a></td>
+                        <td><a href="/Role/Update?Id=@role.Id">修改</a></td>
+                        <td><a href="/Role/GetRoleModules?Id=@role.Id">权限查看</a></td>
+                    </tr>
+                }
+            }
+        }
+    </table>
+</body>
+</html>

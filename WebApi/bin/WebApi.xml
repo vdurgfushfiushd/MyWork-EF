@@ -1,0 +1,323 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>WebApi</name>
+    </assembly>
+    <members>
+        <member name="T:WebApi.App_Start.AutoMapperConfig">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:WebApi.App_Start.AutoMapperConfig.Config">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:WebApi.App_Start.SwaggerNet">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:WebApi.App_Start.SwaggerNet.PreStart">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:WebApi.App_Start.SwaggerNet.PostStart">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="T:WebApi.SwaggerConfig">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:WebApi.SwaggerConfig.Register">
+            <summary>
+            Swagger配置
+            </summary>
+        </member>
+        <member name="T:WebApi.WebApiConfig">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:WebApi.WebApiConfig.Register(System.Web.Http.HttpConfiguration)">
+            <summary>
+            
+            </summary>
+            <param name="config"></param>
+        </member>
+        <member name="T:WebApi.Controllers.ModuleController">
+            <summary>
+            模块webapi控制器
+            </summary>
+        </member>
+        <member name="M:WebApi.Controllers.ModuleController.GetActions(System.String)">
+            <summary>
+            获取指定控制器的action集合
+            </summary>
+            <param name="ControlName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.ModuleController.GetAll">
+            <summary>
+            获取模块集合
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.ModuleController.GetEntity(Newtonsoft.Json.Linq.JObject)">
+            <summary>
+            根据动态条件获取单个模块对象
+            </summary>
+            <param name="jObject"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.ModuleController.GetFilter(Newtonsoft.Json.Linq.JObject)">
+            <summary>
+            根据动态条件获取模块对象集合
+            </summary>
+            <param name="jObject"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.ModuleController.GetControls">
+            <summary>
+            获取控制器的集合
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.ModuleController.Add(Newtonsoft.Json.Linq.JObject)">
+            <summary>
+            模块新增
+            </summary>
+            <param name="jObject"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.ModuleController.Delete(Newtonsoft.Json.Linq.JObject)">
+            <summary>
+            模块删除
+            </summary>
+            <param name="jObject"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.ModuleController.GetUpdateEntity(Newtonsoft.Json.Linq.JObject)">
+            <summary>
+            获取要修改的模块对象
+            </summary>
+            <param name="jObject"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.ModuleController.Update(Newtonsoft.Json.Linq.JObject)">
+            <summary>
+            模块修改
+            </summary>
+            <param name="jObject"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.ModuleController.ShowModule(System.String)">
+            <summary>
+            查看指定模块的详细内容
+            </summary> 
+            <param name="Id"></param>
+            <returns></returns>
+        </member>
+        <member name="T:WebApi.Controllers.MyWorkController">
+            <summary>
+            webapi控制器
+            </summary>
+        </member>
+        <member name="M:WebApi.Controllers.MyWorkController.Login(Newtonsoft.Json.Linq.JObject)">
+            <summary>
+            用户登录
+            </summary>
+            <param name="jObject"></param>
+            <returns></returns>
+        </member>
+        <member name="T:WebApi.Controllers.NoteController">
+            <summary>
+            日记webapi控制器
+            </summary>
+        </member>
+        <member name="M:WebApi.Controllers.NoteController.GetAll">
+            <summary>
+            获取所有的日记集合
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.NoteController.Add(Newtonsoft.Json.Linq.JObject)">
+            <summary>
+            日记新增
+            </summary>
+            <param name="jObject"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.NoteController.Delete(Newtonsoft.Json.Linq.JObject)">
+            <summary>
+            日记删除
+            </summary>
+            <param name="jObject"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.NoteController.GetUpdateEntity(Newtonsoft.Json.Linq.JObject)">
+            <summary>
+            根据日记id获取要修改的日记对象
+            </summary>
+            <param name="jObject"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.NoteController.GetEntity(Newtonsoft.Json.Linq.JObject)">
+            <summary>
+            根据动态条件获取单个日记对象
+            </summary>
+            <param name="jObject"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.NoteController.GetFilter(Newtonsoft.Json.Linq.JObject)">
+            <summary>
+            根据动态条件获取日记对象集合
+            </summary>
+            <param name="jObject"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.NoteController.Update(Newtonsoft.Json.Linq.JObject)">
+            <summary>
+            日志修改
+            </summary>
+            <param name="jObject"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.NoteController.MyNote(System.String)">
+            <summary>
+            获取我的日志
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:WebApi.Controllers.RoleController">
+            <summary>
+            角色webapi控制器
+            </summary>
+        </member>
+        <member name="M:WebApi.Controllers.RoleController.GetAll">
+            <summary>
+            获取所有的角色集合
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.RoleController.Add(Newtonsoft.Json.Linq.JObject)">
+            <summary>
+            角色新增
+            </summary>
+            <param name="jObject"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.RoleController.Delete(Newtonsoft.Json.Linq.JObject)">
+            <summary>
+            角色删除
+            </summary>
+            <param name="jObject"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.RoleController.GetUpdateEntity(Newtonsoft.Json.Linq.JObject)">
+            <summary>
+            获取要修改的角色及其模块
+            </summary>
+            <param name="jObject"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.RoleController.GetEntity(Newtonsoft.Json.Linq.JObject)">
+            <summary>
+            根据动态条件获取单个角色对象
+            </summary>
+            <param name="jObject"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.RoleController.GetFilter(Newtonsoft.Json.Linq.JObject)">
+            <summary>
+            根据动态条件获取角色对象集合
+            </summary>
+            <param name="jObject"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.RoleController.Update(Newtonsoft.Json.Linq.JObject)">
+            <summary>
+            角色修改
+            </summary>
+            <param name="jObject"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.RoleController.ShowRoleModule(System.String)">
+            <summary>
+            根据角色id查询关联角色的权限
+            </summary>
+            <param name="Id"></param>
+            <returns></returns>
+        </member>
+        <member name="T:WebApi.Controllers.UserController">
+            <summary>
+            用户webapi控制器
+            </summary>
+        </member>
+        <member name="M:WebApi.Controllers.UserController.GetAll">
+            <summary>
+            全部查询
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.UserController.GetEntity(Newtonsoft.Json.Linq.JObject)">
+            <summary>
+            根据动态条件获取单个用户对象
+            </summary>
+            <param name="jObject">动态查询条件</param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.UserController.GetFilter(Newtonsoft.Json.Linq.JObject)">
+            <summary>
+            根据动态条件获取用户对象集合
+            </summary>
+            <param name="jObject">动态查询条件</param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.UserController.Add(Newtonsoft.Json.Linq.JObject)">
+            <summary>
+            用户新增
+            </summary>
+            <param name="jObject"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.UserController.Delete(Newtonsoft.Json.Linq.JObject)">
+            <summary>
+            根据用户id删除指定的用户信息
+            </summary>
+            <param name="jObject"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.UserController.GetUpdateEntity(Newtonsoft.Json.Linq.JObject)">
+            <summary>
+            根据用户id获取要修改的用户
+            </summary>
+            <param name="jObject"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.UserController.Update(Newtonsoft.Json.Linq.JObject)">
+            <summary>
+            修改用户信息和关联表的数据
+            </summary>
+            <param name="jObject"></param>
+            <returns></returns>
+        </member>
+        <member name="M:WebApi.Controllers.UserController.ShowUserRoleModule(System.String)">
+            <summary>
+            根据用户id查询用户的所有关联角色名和权限名
+            </summary>
+            <param name="Id"></param>
+            <returns></returns>
+        </member>
+        <member name="T:WebApi.WebApiApplication">
+            <summary>
+            
+            </summary>
+        </member>
+    </members>
+</doc>

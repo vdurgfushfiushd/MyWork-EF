@@ -1,0 +1,117 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>权限管理</title>
+    <script src="~/Scripts/vue.js"></script>
+    <script src="~/Scripts/axios.js"></script>
+    <script>
+        function Add() {
+            window.open("/Module/Add")
+        }
+    </script>
+</head>
+<body>
+    <form action="~/Module/Index" method="post">
+        <div style="display:inline-block" id="ShowControllerNames">
+            <div style="display:inline-block">
+                <label>模块名：</label><input type="text" name="ModuleName" />
+            </div>
+            <div style="display:inline-block">
+                <label>控制器名：</label>
+                <select name="ControllerName" v-on:change="ActionLoad(selectControllerName)" v-model="selectControllerName">
+                    <option></option>
+                    <option v-for="controllerName in controllerNames" v-bind:value="controllerName">{{controllerName}}</option>
+                </select>
+            </div>
+            <div style="display:inline-block">
+                <label>action名：</label>
+                <select name="ActionName">
+                    <option></option>
+                    <option v-for="actionName in actionNames" v-bind:value="actionName">{{actionName}}</option>
+                </select>
+            </div>
+            <div style="display:inline-block">
+                <label>创建时间：</label><input type="datetime" name="CreateTimeFrom" />--<input type="datetime" name="CreateTimeTo" />
+            </div>
+            <div style="display:inline-block">
+                <label>是否软删除：</label><label>已删除</label><input type="radio" value="true" name="IsDeleted" /><label>未删除</label><input type="radio" value="false" name="IsDeleted" checked />
+            </div>
+            <div style="display:inline-block">
+                <input type="submit" value="查询" />
+                <input type="button" value="新增" onclick="Add()" />
+            </div>
+        </div>
+    </form>
+    <table>
+        <tr>
+            <td>Id</td>
+            <td>模块名字</td>
+            <td>描述</td>
+            <td>控制器名字</td>
+            <td>创建时间</td>
+            <td>删除标记</td>
+            <td>真删除</td>
+            <td>软删除</td>
+            <td>修改</td>
+        </tr>
+        @{
+            if (Model != null)
+            {
+                foreach (var module in Model)
+                {
+                <tr>
+                    <td>@module.Id</td>
+                    <td>@module.ModuleName</td>
+                    <td>@module.Describe</td>
+                    <td>@module.ControllerName</td>
+                    <td>@module.CreateTime</td>
+                    <td>@module.IsDeleted</td>
+                    <td><a href="/Module/Delete?Id=@module.Id">真删除</a></td>
+                    <td><a href="/Module/MaskDelete?Id=@module.Id">软删除</a></td>
+                    <td><a href="/Module/Update?Id=@module.Id">修改</a></td>
+                </tr>
+                }
+            }
+        }
+    </table>
+    <script>
+        var vm = new Vue({
+            el:"#ShowControllerNames",
+            mounted() {
+                this.Init();
+            },
+            data: {
+                selectControllerName: '',
+                controllerNames: [],
+                actionNames: []
+            },
+            methods: {
+                Init: function () {
+                    axios.post('@Url.Action("GetControllers", "Module")').then((response => {
+                        this.controllerNames = [];
+                        for (var i = 0; i < response.data.length; i++) {
+                            this.controllerNames.push(response.data[i]);
+                        }
+                    })).catch(function (response) {
+                        alert(response);
+                    });
+                },
+                ActionLoad: function (selectControllerName) {
+                    axios.post('@Url.Action("GetActions", "Module")', { ControllerName: selectControllerName}).then((response => {
+                        this.actionNames = [];
+                        for (var i = 0; i < response.data.length; i++) {
+                            this.actionNames.push(response.data[i]);
+                        }
+                    })).catch(function (response) {
+                        alert(response);
+                    });
+                }
+            }
+        });
+    </script>
+</body>
+</html>

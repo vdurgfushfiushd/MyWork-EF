@@ -1,0 +1,66 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>日志管理</title>
+    <script>
+        function Add() {
+            window.open("/Note/Add")
+        }
+    </script>
+</head>
+<body>
+    <form action="~/Note/Index" method="post">
+        <div style="display:inline-block">
+            <div style="display:inline-block">
+                <label>日志名：</label><input type="text" name="Name" />
+            </div>
+            <div style="display:inline-block">
+                <label>创建时间：</label><input type="datetime" name="CreateTimeFrom" />--<input type="datetime" name="CreateTimeTo" />
+            </div>
+            <div style="display:inline-block">
+                <label>是否软删除：</label><label>已删除</label><input type="radio" value="true" name="IsDeleted" /><label>未删除</label><input type="radio" value="false" name="IsDeleted" checked />
+            </div>
+            <div style="display:inline-block">
+                <input type="submit" value="查询" />
+                <input type="button" value="新增" onclick="Add()" />
+            </div>
+        </div>
+    </form>
+    <table>
+        <tr>
+            <td>日志Id</td>
+            <td>日志作者</td>
+            <td>日志名字</td>
+            <td>创建时间</td>
+            <td>删除标记</td>
+            <td>真删除</td>
+            <td>软删除</td>
+            <td>编辑</td>
+            <td>查看</td>
+        </tr>
+        @{
+            if (Model != null)
+            {
+                foreach (var note in Model)
+                {
+                <tr>
+                    <td>@note.Id</td>
+                    <td>@note.Author</td>
+                    <td>@note.Name</td>
+                    <td>@note.CreateTime</td>
+                    <td>@note.IsDeleted</td>
+                    <td><a href="/Note/Delete?Id=@note.Id">真删除</a></td>
+                    <td><a href="/Note/MaskDelete?Id=@note.Id">软删除</a></td>
+                    <td><a href="/Note/Update?Id=@note.Id">编辑</a></td>
+                    <td><a href="/Note/Show?Id=@note.Id">查看</a></td>
+                </tr>
+                }
+            }
+        }
+    </table>
+</body>
+</html>

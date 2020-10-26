@@ -1,0 +1,71 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>角色编辑</title>
+</head>
+<body>
+    <form action="/Role/Update" method="post">
+        <div>
+            <div>
+                <input type="hidden" name="Id" id="Id" value=@Model[0].Id>
+            </div>
+        </div>
+        <div>
+            <label>角色名字：</label>
+            <div>
+                <input type="text" name="Name" id="Name" value=@Model[0].Name>
+            </div>
+        </div>
+        <div>
+            <label>角色描述：</label>
+            <div>
+                <input type="text" name="Describe" id="Describe" value=@Model[0].Describe>
+            </div>
+        </div>
+        <div style="display:inline-block">
+            <label>是否删除：</label>
+            <div>
+                @{ if (@Model[0].IsDeleted)
+                    {
+                        <label>不删除</label><input type="radio" name="IsDeleted" value="false" />
+                        <label>删  除</label><input type="radio" name="IsDeleted" value="true" checked />
+                    }
+                    else
+                    {
+                        <label>不删除</label><input type="radio" name="IsDeleted" value="false" checked />
+                        <label>删  除</label><input type="radio" name="IsDeleted" value="true" />
+                    }
+                }
+            </div>
+        </div>
+        <div>
+            <label>角色权限：</label>
+            <div>
+                @{
+                    foreach (var module in @Model)
+                    {
+                        if (@module.IsChoosed)
+                        {
+                            <input type="checkbox" name="ModuleIds" id="ModuleIds" value="@module.ModuleId" checked>@module.ModuleName<lable>--</lable><lable>@module.ActionName</lable>
+                        }
+                        else
+                        {
+                            <input type="checkbox" name="ModuleIds" id="ModuleIds" value="@module.ModuleId">@module.ModuleName<lable>--</lable><lable>@module.ActionName</lable>
+                        }
+                    }
+                }
+            </div>
+        </div>
+        <div>
+            <div>
+                <input type="submit" value="立即提交" />
+                <input type="reset" value="重置" />
+            </div>
+        </div>
+    </form>
+</body>
+</html>

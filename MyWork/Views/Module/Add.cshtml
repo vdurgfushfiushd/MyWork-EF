@@ -1,0 +1,90 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>模块新增</title>
+    <script src="~/Scripts/vue.js"></script>
+    <script src="~/Scripts/axios.js"></script>
+</head>
+<body>
+   <form action="~/Module/AddByAdminister" method="post">
+       <div id="ModuleAdd">
+           <div>
+               <label>模块名字：</label>
+               <div>
+                   <input type="text" name="ModuleName" />
+               </div>
+           </div>
+           <div>
+               <label>模块描述：</label>
+               <div>
+                   <input type="text" name="Describe" />
+               </div>
+           </div>
+           <div>
+               <label>是否删除：</label>
+               <div style="display:inline-block">
+                   <label>不删除</label><input type="radio" name="IsDeleted" value="false" checked />
+                   <label>删  除</label><input type="radio" name="IsDeleted" value="true" />
+               </div>
+           </div>
+           <div>
+               <label>控制器名字：</label>
+               <div>
+                   <select name="ControllerName" v-on:change="ActionLoad(selectControllerName)" v-model="selectControllerName">
+                       <option v-for="controllerName in controllerNames" v-bind:value="controllerName">{{controllerName}}</option>
+                   </select>
+               </div>
+           </div>
+           <div>
+               <label>action名字：</label>
+               <div v-for="actionName in actionNames" style="display:inline-block">
+                   <label>{{actionName}}</label><input type="checkbox" name="ActionNames" v-bind:value="actionName" />
+               </div>
+           </div>
+           <div>
+               <input type="submit" value="新增" />
+               <input type="reset" value="重置" />
+           </div>
+       </div>
+   </form>
+   <script>
+        var vm = new Vue({
+            el: "#ModuleAdd",
+            mounted() {
+                this.Init();
+            },
+            data: {
+                selectControllerName:'',
+                controllerNames:[],
+                actionNames:[]
+            },
+            methods: {
+                Init: function () {
+                    axios.post('@Url.Action("GetControllers", "Module")').then((response => {
+                        this.controllerNames = [];
+                        for (var i = 0; i < response.data.length; i++) {
+                            this.controllerNames.push(response.data[i]);
+                        }
+                    })).catch(function (response) {
+                        alert(response);
+                    });
+                },
+                ActionLoad: function (selectControllerName) {
+                    axios.post('@Url.Action("GetActions", "Module")', { ControllerName: selectControllerName}).then((response => {
+                        this.actionNames = [];
+                        for (var i = 0; i < response.data.length; i++) {
+                            this.actionNames.push(response.data[i]);
+                        }
+                    })).catch(function (response) {
+                        alert(response);
+                    });
+                }
+            }
+        });
+   </script>
+</body>
+</html>

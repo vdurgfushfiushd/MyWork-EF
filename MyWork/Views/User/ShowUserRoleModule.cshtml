@@ -1,0 +1,37 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>用户角色和权限</title>
+</head>
+<body>
+    <table>
+        <tr>
+            <td>id</td>
+            <td>用户名</td>
+            <td>密码</td>
+            <td>角色名</td>
+            <td>模块名</td>
+            <td>控制器名</td>
+            <td>action名</td>
+        </tr>
+        @{ 
+            foreach (var userrolemodule in Model)
+            { 
+                <tr>
+                    <td>@userrolemodule.Id</td>
+                    <td>@userrolemodule.UserName</td>
+                    <td>@userrolemodule.Password</td>
+                    <td>@userrolemodule.RoleName</td>
+                    <td>@userrolemodule.ModuleName</td>
+                    <td>@userrolemodule.ControllerName</td>
+                    <td>@userrolemodule.ActionName</td>
+                </tr>
+            }
+        }
+    </table>
+</body>
+</html>

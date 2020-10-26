@@ -1,0 +1,294 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Snappy.NET</name>
+    </assembly>
+    <members>
+        <member name="T:Snappy.SnappyCodec">
+            <summary>
+            Straightforward wrapper around the underlying native Snappy library.
+            You can compress, uncompress, and validate fixed-size buffers without framing overhead.
+            Methods of this class forward their parameters directly to the native code without unnecessary buffer copying.
+            </summary>
+        </member>
+        <member name="M:Snappy.SnappyCodec.Compress(System.Byte[],System.Int32,System.Int32,System.Byte[],System.Int32)">
+            <summary>
+            Compresses byte buffer using Snappy compression.
+            </summary>
+            <param name="input">Input buffer containing data to be compressed.</param>
+            <param name="offset">Offset into the input buffer where input data is located.</param>
+            <param name="length">Size of input data in the input buffer. Zero-length input is allowed. There's no maximum input size.</param>
+            <param name="output">
+            Output buffer where compressed data will be stored.
+            Buffer length minus outOffset must be equal or higher than return value of GetMaxCompressedLength method.
+            </param>
+            <param name="outOffset">Offset into the output buffer where compressed data will be stored.</param>
+            <returns>Length of compressed data written into the output buffer.</returns>
+        </member>
+        <member name="M:Snappy.SnappyCodec.Compress(System.Byte[])">
+            <summary>
+            Compresses byte buffer using Snappy compression.
+            </summary>
+            <param name="input">Input buffer containing data to be compressed. Zero-length input is allowed.</param>
+            <returns>Compressed data.</returns>
+        </member>
+        <member name="M:Snappy.SnappyCodec.Uncompress(System.Byte[],System.Int32,System.Int32,System.Byte[],System.Int32)">
+            <summary>
+            Decompresses data previously compressed with Snappy.
+            </summary>
+            <param name="input">Input buffer containing compressed data.</param>
+            <param name="offset">Offset of compressed data within the input buffer.</param>
+            <param name="length">Length of compressed data within the input buffer.</param>
+            <param name="output">
+            Output buffer where decompressed data will be written.
+            Buffer length minus outOffset must be equal or higher than return value of GetUncompressedLength method.
+            </param>
+            <param name="outOffset">Offset into the output buffer where decompressed data will be stored.</param>
+            <returns>Length of decompressed data written into the output buffer.</returns>
+        </member>
+        <member name="M:Snappy.SnappyCodec.Uncompress(System.Byte[])">
+            <summary>
+            Decompresses data previously compressed with Snappy.
+            </summary>
+            <param name="input">Input buffer containing compressed data.</param>
+            <returns>Decompressed data.</returns>
+        </member>
+        <member name="M:Snappy.SnappyCodec.GetMaxCompressedLength(System.Int32)">
+            <summary>
+            Estimates maximum length of compressed data.
+            Note that compressed data may be slightly larger than uncompressed data in some extreme cases of uncompressible data.
+            </summary>
+            <param name="inLength">Length of uncompressed data used as a basis for calculation of maximum length of compressed data.</param>
+            <returns>Maximum length of compressed data given input of length inLength.</returns>
+        </member>
+        <member name="M:Snappy.SnappyCodec.GetUncompressedLength(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Retrieves length of uncompressed data for given buffer of compressed data. This is O(1) lookup
+            that merely parses first few bytes of the compressed buffer where the length has been recorded during compression.
+            </summary>
+            <param name="input">Input buffer containing compressed data.</param>
+            <param name="offset">Offset where compressed data is located in the input buffer.</param>
+            <param name="length">Length of compressed data in the input buffer.</param>
+            <returns>Exact length of uncompressed data encoded in the input buffer.</returns>
+        </member>
+        <member name="M:Snappy.SnappyCodec.GetUncompressedLength(System.Byte[])">
+            <summary>
+            Retrieves length of uncompressed data for given buffer of compressed data. This is O(1) lookup
+            that merely parses first few bytes of the compressed buffer where the length has been recorded during compression.
+            </summary>
+            <param name="input">Input buffer containing compressed data.</param>
+            <returns>Exact length of uncompressed data encoded in the input buffer.</returns>
+        </member>
+        <member name="M:Snappy.SnappyCodec.Validate(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Checks integrity of compressed data. This method performs sanity checks that ensure that the buffer can be decompressed.
+            It doesn't check integrity of data. It merely ensures that decompression will succeed with _some_ result.
+            CRC or other data integrity checks can be provided by higher level protocols like the Snappy framing format.
+            </summary>
+            <param name="input">Input buffer containing compressed data.</param>
+            <param name="offset">Offset where compressed data is located in the input buffer.</param>
+            <param name="length">Length of compressed data in the input buffer.</param>
+            <returns>True if the buffer contains valid Snappy compressed block. False otherwise.</returns>
+        </member>
+        <member name="M:Snappy.SnappyCodec.Validate(System.Byte[])">
+            <summary>
+            Checks integrity of compressed data. This method performs sanity checks that ensure that the buffer can be decompressed.
+            It doesn't check integrity of data. It merely ensures that decompression will succeed with _some_ result.
+            CRC or other data integrity checks can be provided by higher level protocols like the Snappy framing format.
+            </summary>
+            <param name="input">Input buffer containing compressed data.</param>
+            <returns>True if the buffer contains valid Snappy compressed block. False otherwise.</returns>
+        </member>
+        <member name="T:Snappy.SnappyFrame">
+            <summary>
+            Represents single Snappy frame that conforms to Snappy framing format.
+            </summary>
+        </member>
+        <member name="F:Snappy.SnappyFrame.MaxFrameSize">
+            <summary>
+            Maximum size of uncompressed data in Snappy frame. It's 64KB in current version of the format.
+            </summary>
+        </member>
+        <member name="F:Snappy.SnappyFrame.StreamIdentifier">
+            <summary>
+            Stream identifier text. It is found in ASCII in identifier frame that leads the stream of Snappy frames.
+            </summary>
+        </member>
+        <member name="M:Snappy.SnappyFrame.#ctor">
+            <summary>
+            Create new Snappy frame. Frame is initialized to zero-length padding frame by default.
+            </summary>
+        </member>
+        <member name="M:Snappy.SnappyFrame.SetStreamIdentifier">
+            <summary>
+            Resets this frame to stream identifier frame. First frame in the stream must be identifier frame.
+            </summary>
+        </member>
+        <member name="M:Snappy.SnappyFrame.SetPadding(System.Int32)">
+            <summary>
+            Resets this frame to padding frame of specified size.
+            </summary>
+            <param name="size">Size of padding data excluding the 4 bytes of frame header. Maximum padding size is 16MB.</param>
+        </member>
+        <member name="M:Snappy.SnappyFrame.SetCompressed(System.Byte[])">
+            <summary>
+            Resets this frame to contain compressed data.
+            </summary>
+            <param name="data">Uncompressed data that is compressed by this method before being stored in the frame. Maximum data size is 64KB.</param>
+        </member>
+        <member name="M:Snappy.SnappyFrame.SetCompressed(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Resets this frame to contain compressed data.
+            </summary>
+            <param name="data">Input buffer containing uncompressed data that is compressed by this method before being stored in the frame.</param>
+            <param name="offset">Offset of uncompressed data in the input buffer.</param>
+            <param name="count">Size of uncompressed data in the input buffer. Maximum data size is 64KB.</param>
+        </member>
+        <member name="M:Snappy.SnappyFrame.SetUncompressed(System.Byte[])">
+            <summary>
+            Resets this frame to contain uncompressed data.
+            </summary>
+            <param name="data">Uncompressed data to store in the frame. Maximum data size is 64KB.</param>
+        </member>
+        <member name="M:Snappy.SnappyFrame.SetUncompressed(System.Byte[],System.Int32,System.Int32)">
+            <summary>
+            Resets this frame to contain uncompressed data.
+            </summary>
+            <param name="data">Input buffer containing uncompressed data to be stored in this frame.</param>
+            <param name="offset">Offset of uncompressed data in the input buffer.</param>
+            <param name="count">Size of uncompressed data in the input buffer. Maximum data size is 64KB.</param>
+        </member>
+        <member name="M:Snappy.SnappyFrame.GetData(System.Byte[])">
+            <summary>
+            Retrieves data from the frame. Data is uncompressed before being stored in the output buffer.
+            CRC of the data is checked and CRC failure results in exception.
+            </summary>
+            <param name="buffer">Output buffer where uncompressed data is stored. It must be at least DataLength bytes long.</param>
+        </member>
+        <member name="M:Snappy.SnappyFrame.GetData(System.Byte[],System.Int32)">
+            <summary>
+            Retrieves data from the frame. Data is uncompressed before being stored in the output buffer.
+            CRC of the data is checked and CRC failure results in exception.
+            </summary>
+            <param name="buffer">Output buffer where uncompressed data is stored. Buffer length minus offset must be at least DataLength bytes.</param>
+            <param name="offset">Offset into the output buffer where uncompressed data will be stored.</param>
+        </member>
+        <member name="M:Snappy.SnappyFrame.Read(System.IO.Stream)">
+            <summary>
+            Retrieves Snappy frame from underlying stream. Retrieved frame data is stored in properties of this object.
+            Return value indicates end of stream. Exceptions indicate data integrity errors and underlying stream errors.
+            </summary>
+            <param name="stream">Underlying stream that will be read by this method.</param>
+            <returns>
+            True if frame was successfully retrieved. False if there are no more frames in the stream, i.e. the end of stream has been reached.
+            Note that reaching the end of stream in the middle of the frame is considered an error and causes exception instead.
+            </returns>
+        </member>
+        <member name="M:Snappy.SnappyFrame.ReadAsync(System.IO.Stream)">
+            <summary>
+            Retrieves Snappy frame from underlying stream. Retrieved frame data is stored in properties of this object.
+            Return value indicates end of stream. Exceptions indicate data integrity errors and underlying stream errors.
+            </summary>
+            <param name="stream">Underlying stream that will be read by this method.</param>
+            <returns>
+            True if frame was successfully retrieved. False if there are no more frames in the stream, i.e. the end of stream has been reached.
+            Note that reaching the end of stream in the middle of the frame is considered an error and causes exception instead.
+            </returns>
+        </member>
+        <member name="M:Snappy.SnappyFrame.ReadAsync(System.IO.Stream,System.Threading.CancellationToken)">
+            <summary>
+            Retrieves Snappy frame from underlying stream. Retrieved frame data is stored in properties of this object.
+            Return value indicates end of stream. Exceptions indicate data integrity errors and underlying stream errors.
+            </summary>
+            <param name="stream">Underlying stream that will be read by this method.</param>
+            <param name="cancellation">Cancellation token that can be used to cancel the read operation.</param>
+            <returns>
+            True if frame was successfully retrieved. False if there are no more frames in the stream, i.e. the end of stream has been reached.
+            Note that reaching the end of stream in the middle of the frame is considered an error and causes exception instead.
+            </returns>
+        </member>
+        <member name="M:Snappy.SnappyFrame.Write(System.IO.Stream)">
+            <summary>
+            Writes the frame into the underlying stream.
+            </summary>
+            <param name="stream">Underlying stream where the frame will be written.</param>
+        </member>
+        <member name="M:Snappy.SnappyFrame.WriteAsync(System.IO.Stream)">
+            <summary>
+            Writes the frame into the underlying stream.
+            </summary>
+            <param name="stream">Underlying stream where the frame will be written.</param>
+            <returns>Task object indicating completion of the write.</returns>
+        </member>
+        <member name="M:Snappy.SnappyFrame.WriteAsync(System.IO.Stream,System.Threading.CancellationToken)">
+            <summary>
+            Writes the frame into the underlying stream.
+            </summary>
+            <param name="stream">Underlying stream where the frame will be written.</param>
+            <param name="cancellation">Cancellation token that can be used to cancel the write operation.</param>
+            <returns>Task object indicating completion of the write.</returns>
+        </member>
+        <member name="P:Snappy.SnappyFrame.Type">
+            <summary>
+            Type of Snappy frame. It contains decoded frame type upon deserialization. It is set automatically by Set* methods.
+            </summary>
+        </member>
+        <member name="P:Snappy.SnappyFrame.Checksum">
+            <summary>
+            Data checksum is present in compressed and uncompressed frames. Otherwise it is zero.
+            It is computed automatically by Set* methods.
+            It is automatically checked when reading data through Data property or GetData method.
+            It is CRC-32C (Castagnoli) of the uncompressed data with final CRC obfuscated
+            with transformation ((crc &gt;&gt; 15) | (crc &lt;&lt; 17)) + 0xa282ead8.
+            </summary>
+        </member>
+        <member name="P:Snappy.SnappyFrame.DataLength">
+            <summary>
+            Length of uncompressed data for data frames. Querying this property takes O(1) time.
+            For compressed and uncompressed data, data length is never larger than 64KB.
+            For padding frames, this property is equal to the length of padding data.
+            Identification frame has data length of 6.
+            Data length is automatically set by Set* methods and upon frame deserialization.
+            </summary>
+        </member>
+        <member name="P:Snappy.SnappyFrame.Data">
+            <summary>
+            Uncompressed data in the frame. It is available only for frame type Compressed or Uncompressed.
+            Querying this property tú€cÒ7ğôÅÖ˜86-Rô©ãÄ¬ê0/ğd©æk»Es’ÑŸY]&.Ç.Ü”ã·~Ø¶¢…,:o!™<æ§~Ãt÷Ğ¿ır®èXÂô4É[›EQw›qäoìdåÑ‰<ó­O_é€MàÊ™üÏ|cüG÷ªÿ`ˆ@&ŠG Z|»½åiâó?eÎ1Õ%X€ÿñåÕñ¹*6óÃø¨X—œeê¤Ü@"X
+Fkã}ñà­—Ä[dÆîµP‹Ñ}1p›šÒÔ©ÔR¸E^`K“ä6JzEi$LÂ²şİ0t¡76;Å@z'åP0Å	şô"Ğ©ÃI²@%ïVôê•/œä´‚¦R‹6"Û^ynŒt›ëÌDÁE¹K..êE¤ÆU¥jLQE´+kÿò€eÿ]M”ÕÌâvßÍ®›—•Q?¾ş‹($¹c	®}ëÂ¾UWìÚ$=²t”Š¾SÏ¹ÇYäsÀ¢T]¢>öÑ" UŸÌ¶E„Ûìöµ£Â±¢²Zß„Û“’¾©{>ØM;¡Ä•Ğ¤»¥ØsI7jeèœ|,½[DQôÛâVxiĞ:øĞªï‰«„I¶ÙùªBNÀwğ?çK5II~Ì×/Õ­”‹¬n­ÃÅ9JDs¼çbaÏ0 Ø~	ÜE¥–çmˆD=¯06¾íËOåH;İxJLl™ŒÒ•CŸ6,ÈôÃø_BúJN´K\çày™‘m¢{Ï9º~·Œ«(ˆÍÓûÒ›ƒ`*æC¯	+ÛÈ-úˆ(?Jœ¶‰\•|YÎşşêfSœ³>úñÕ“Èß¬“ú'3ßğtzzü¶Bˆ²­4	Í‹Øî®;ÈôFàóSB„xö UÉ›¬6ÜÊ‰)Â–¨šÂù‚‡q¥j¦<§È
+x<·&`îP…±=Ñ#	¯-CÚ»Í%Û]%ß6¶Ñ9`G3®7V†ÈÂÄ\+¿Ñ£LÊzqfcXª¢]µ	¼Îpí(İsê?´*ä^~eo¦ÙûÙH{/ gÅ·c(Mä×ì¸J	·üFŒ[«¿"ëîSzjeTfàe™SpF¡µÆ_.ØUaöuÔ¡ûY_*¸`ıÜ
+½ùQ¥ò;ê¸‰2fŸš¾×µLê%}n£‚Ö›FqH¸æËì‘|—î9ì)UÑšì_B7ÊQ9È«VÈÍÅÏS*.ñÚ.5÷²)(Èæˆ˜'ã1Œô5ÓáIêıEá¿Êà=Ôy¦ZnÌ‡Å›´dE@-'å‰V3‚İ .„H¼’ûŸ_­Äë ·Ñ`£u4PD—§Á­ô-Ó BÌÆ×l^s® B·ÌnŞHıà Ã‚:nŞÜ8KQÑê³à®ïŸ´W$¼‰‡¬$ÄÉÍa,i1a÷1f‚…yBŒÅ)o¤„I„ÉÎ×œ	ÑßÚºÑõ#¥¸ã«Ã
+ŠØÛ-³}½8ro 3úŸ¢´¼ÑoŠ„­©`ØËÎÕ¬éŸ¡F;@É;çO->,ów:0Q¥b2]'«GÍ+ˆY»Ôs™ĞĞx‹®Ğª¿¬KÄ;´AçbÒ¹Y<¬IÏ‘fİ¼š'	É&??xxç^˜¯êÅºÏLŠ ‚“{"î
+(³‚áàôb>½½œ]íÛ‚õƒ`]‘ÖxÓéóo‰ìK´›ŠÈL¨Çm6‹@­JÑK«á‡Ü7.ü[¥ëwVFa-··ørlyÖˆ4@­Êû wÿj¸»*÷"¸¾;g¬Nv’>wfW\ÍµèmWVg'E
+¿õ÷Ğ¬{Ï`ÓOÊ"ó©›ŸsĞæ÷ùä-Q4¯²ÜF>èk)m‡€Ë`ĞºN'unŸN›ÕéÍå´T}üƒ‹Jm¼û\VÌ0ÒëßÒëóyÁ-R‡<bxŒb9ÓÃ^}—Î‘¢]¾øÜ~Ö­“êªÖÅèTé@öı‚rî•å9“,-ÒJ4ÆÀ/oùuÔ\²Z„Ûæ=Ú]ã4{*šNâ6R,0Æì~å‡âJ#›Î¶éQ½t:`>A #âÍS½ÕîP{ºı@şKsÒÃ)šÄ‚K\ÙÅöF³`[W*8¬–†DÈX–ÌPÎ`]÷í¡ZÒY3*9ªı¸‚;ÜU7øĞ=öêIÖ£¸BQŞZ=·î½ß*›©$¿$•óvdßréb:Áv“ÕQ–*%æ²¿äÒñ±¨ÛH'=G¹Jºüº¿&¨¸‹#í+’Çü	gH×k¥uĞ,`Óñ‡‹áiğ^X›ö£r.¹»rïş¦B×k=Ø¾HFë»İéÔî½[XÕƒ-˜ÿ÷ š´QB©i8ôŠÙ²äÚ¤äÚjHÊÑ¨u²ÀµX¿b4|Xî+‡™+Æ”=³ê¥_©}¿§k¾bu2ƒ;´†À äpG-¡ã×oQvµÑk€w…²_°òïwÃÇ‹°óV0ÔPœ#Ï‰÷ç®~/I‚ãúûÅãŠ¶âÒXì½¦dq[föôµ]`Ş×şCÛÏ5±¤ĞÛºunl³İ+à·o‘Ş%tÓ)GÏ”ı7åx\‘,'Ş[€BWlê3¬m^^LßÒ@Õx)P¾œYÂ’dı£CgŒöšGGÅ*•DíiÃE=Ñ¾tc¼Yâ¾aeÊCoìÑU"Ô9¹á»˜ÕÒˆØ®˜ˆ¶é„"#ØõÒÍë	÷‚[ÑTää1Í6rªH(²åqX?côûë°²•ª“ÀjfIŒéÕo¬8è&X~®€¡íšğ5’œ)¢/ˆ8¿ Ï@TÃŠ-ÕÈh.”aº½=K"Åäiswá;şR»ZˆBğ2^¿c¶ó7›F¨hù€M	¨²`kó~"ÏÊã½‰R#VôšdÛÄ;ı0nê…Ø94}Â*°Î@ôx–^éVÍlMH¾°Uihp6§ç[»óŸgvÒ½¸;…¼;Ù.GîÜ ¹õ­‰5ò‚Ïur¢ N•)œ_¦ á'î®ê|Ş¦¶yÔ©ı”ÊSkË¹û0"sÈAÏ•é"y·ìO#«#VÅ×jÔësÆçÆVã4ƒC8Aç$ÄÛ;Íù…nÛ¶@yøş{ı{"y	?³û:™9\ëXvn%ºëòšx+¯¿SA6l~'ÕË®Ó»tF ·Fcß_•íy¯0P½ŒRáš
+-«‡è6/H3½»Ny€é2GÍ‘´óğNÿrqPğ°Á²äE	*UÈÎ5AÈ¶ëÅÎùİ'´_·›Î5&IIO6r¸gq¥~¼§‰C“,T³ËF6Å±dÅ!«¨Äğ©ÇXÑ/í˜«+-*Ø‚Áç9{š(´ò9X†¿.\½ “?(ÅD>e§¬á„‚,®ê§ƒ“;?¼Ó+!É«‰¦ma–hœıøjıŒ²€1àŠX(Ş­o]IÀ2#Ò€ÓğºıäAü¬T¼„bJ¦£kŞ”#¼C—·q ƒæ5¹ÅŒ Cî‹3K03°„…¡‡/—PKF6·&\Ã3Ë˜UË"nO ¶ëİ@ĞíîTvSLŞŒ¨™ğ«àT÷‹9ïŞmìÊÑ·TúdéKkÎeÜf‰whÊse³Ñ6)yqeà${SX±Î#‘Ò{Ê²ŸÑSyØ^_ \\g+"äI™Áàœe`Ğî^yîêÍ}nŸ”ŸJÌ9F‹´s%×Œtø	’Òõ×|>óâº<™hL{J®6œqŒaîKh3cq0şBl¿á°œxì½Ë²ä™ä÷Ö÷"¡”PôA2o¥0ˆ ÒY’%´EaÆR«º/­¹Èô{4ômÁÅw¹z6‹KÄÈ}D=]ñ™^:åßˆ şÖY¤R³¨„#ód=›¶ô“€÷ø˜Ãë8Ïëÿ"gÏı¡kJ„Ç ¬õÜZkµÌîŸĞPsÛú{Ø¡ÉyãÓi´c!*K{—[æ«y(?(2¢K›}oÓ\›Fìºv¡l~ˆıônƒƒRäâ§}(ŒpSåw¢RGœUoäEÚ@0C‚ÜME“ÎğV
+ÎşCÉŠ¯J6´ÆH>Òœ³˜]zÚÖcÆÏ¶Ø1É;ãx‹Ò]ÜößD#>= =‹ŞîÏà@ËAf§Z4–ä	2û;{º¨(`ó•,Â‘”è82Äã(Yšs²BÀsUÚ4ïÔe+m…5À;|‹e·BäDë¿m@1ÕŞLù`ÅÉÁàÈ…É
+Õ|±±Ãú½ßş«~¥Æ‘ä³aà†ÀF’×†\5æ7gr7^~F‡êE«í‚»Q­Ûö;Áıë%UÄæµâLDšA.Åöê¥–¨aÔ'â1ğYCÉ£š XE·_MÃ×€0$-ZıÂ;—Â†¤¿Ğ«:d	¸ş´v9ve,úŞ!Ì7ÂçŒ.^PI?h?'JDUMô&–RS‹2"Å,ÒF4Ü-¢ÒÚ`˜|MgI¿Ò|_as¹›wkH²|ƒ9Õ¤×Õy—åĞs¹î÷È_gµMÕ7zIR>vŞaß3uÿœûñ]NŒ|°"&}ßØjú¯–¬Ø}úÁÿæ]ªĞöU¬íÙ5:½­g€G6MŸ‘Û[9Ò¬4³¹³mj›rö²*Ê·)ÓğóÇ9kŞ‚ëbjå¾ñåQ„/G¶011UAny×‡x¥WW/us€ÀÕúaH„¦Dô ÙaYyåmàï:!Èş4d¡OPo¤áİÖÉ;9Û'¨m5|ó@;€s˜Óæ^2·±MÜåÈOü„‚ìãs[˜æ^e¡ølÖ}UD)Eà.Ïº˜±kûÂ/TB iïY„#áş/²’I<‹(ì2eª#şÍ[‚Ó¨\¼·Ç¶u”Hßnü¶äêCTÀß\–<Ü\Ìp:mÆ»,¤«÷µÉâP\¼.6†¸	T(m`X.hw§êóæWaø „çºÕ¸¸é¿ØMiĞ²Ü²RÁ%MNWÎÊ¤­$wrSl8®:a@„†Cr#³=¬60£Ô²$µWKüÄ7ÍG¢§/(±·hw (¡ašòm¶CO{_¯NGœç1]‘É¥İ<RÇ##qXàuÒuã“vdCÅÔgÉ#å·ó-ÜÃ-ic]ÑA-M£Æ‰·Úæ“Û%'÷v<{´G¿¤-W1Pzİ w}nG“~wÌÑ…yÓ}w÷…å×à±m7‘]Û‰µoŞtÎ—W,‚Ø@ùM ñ¹ÊıÛÿŸc¤}]Ï_*ÑmK¦«Òfaë¤lÄôé´U‘İÏ£3;4éÛ–²Gj®Ü;Ÿ9øq“¾ı*.)&V±áŸSeBb}Ë ƒU†–İx×èšzõç4hİ¯fŒXidP/q–f›§Z ß^şQ«‚lîsEÊò%ùê]`L»³¸"‹&Zg4T¼c÷‰­oU)›TÉ®ÇXÇ./Wµia%[zƒ)ÒF‡íÒ•@¢QNäÌ¬Ñ»\×ÒAÔ
+¶ùµO3 ı{ tÁhŠn&¡¢í\º6ºÊûyü`qT	ˆÿVÏ‹£¤H‰=9…`ƒÀíÃ¼¼×ª6i‹7Cš|ñ]Ì+eÊÛËl8n[›Ea„Bü†vj­heÿ¨y[Skˆñ±$•m#bØ%U²Õ„s§ªÜÂ|Ç2aÁsåstA?'2+}aßêc#1K+F[yÁÜr¬ÄAvŠ|2‡‹w†yÂ„™"&aTğiç÷êèäÊŞûƒÑ©QTÁ…vÂ?U×+çÛŞÒée62Ì@~¼1>roÖ5F)$Ğ1Ü—Ë©®5­Tbt7Î‡ODüØ%
+'ó=
+gÕËT?'{ì¸˜@?×tß×P=
++‘vÉİ ±ø]öë·áºUÊ¸‚ÄŸ
+›£ï²û‰:pMß¬ûbV°nš/FÀ6´ªÌ,BNOUmõ
+23K¿É'$¢aé­ô!µ™¯Yå/¦–2a[¹9F/ÚÌH5…ø`­Š½i¦á]OÖaMûFÃå˜ö‚r7a6ºŠ­ªù•à•°ˆ°VéçY|-Òş?Åô³+‡’¹‚¨†L5ÏÆQŸZÿå—	k5“
+ y5p€v‚öå]v²¹75"$´~+)	HœÌq½¹±û¥sMªK‹õ9pĞPÒW	¦«ÖağÚÑå©cK§ÿ™ßçG@Š ğuõx9!7Zxìã–HèN2ëÅªsèuÀ3iÎïÕ<°–¬ı»qÎ£çE°4ãğvMÊxlVÔ¡VíïÌJe0‚(‹ìÒYf7(+-Uu–{Vø8ñtjÅÎ,(Æ7U×!wñş2"¢ÛÆşN0By¶¢ouÀ Ee(Éóv¸~è›,D!Í¹&âUFvns.^£ı¹hºå%DQ(lÌÿÀC…m°n¿!VC ‘é[C)fné\çÄ˜à‡ ñ={üšÚP*JCƒæò$Âƒ‚Šªò7“ªÆU@±U÷2µN^ë…DùíD]}±Ã¦€cLÖJïÑ¿ºk±«¥¤‹ ÷­èY=n$(¿˜¬÷ØıªºvØ¥AèYú”³NºÃ’$tüÍ–] (£½éóütb$–•:OPÉÛúe•ZòdióË—ÄñA¢|ŞäˆS^¿* ûìÆgÚÙğİd¸:n€vˆ%3ã¨¨Ò›yù
+¨	U.’×Ø­Õò»ÿ0‚s™“ø„XÏSôlgöUøn}`¼#7°j”c ¸nHdÚ§Ù;šC_‚M;éñµ²”a…ÙÇ×Ñ‘–¼J=È@$«$èØP‡….…–án:µÍ/~™è;Äs™Íçnr”«à‡W”¢|õÔWÇ~etp¾‹d)î^˜ 7İ^U8¶á¾PÉÍ¿½‡ìšsC9/k—Õ@ ÇÎÕL:øµÚÏ„âA#bÁØÁ]’F~r²R^Wa÷mOŒB_aîÒ†ì0T='¿à3.»,ë	Ä$çlzÿWÌ\PTÒ_a{åÎ»FÛ«c^xõ‰de69‚…5/’†÷«ZMEÔBÉ\ù¼7!R–6ğhnÔ |Ù›U«¤’–î¾ÅÙzì‡¾tC°Ï¬¤ 98j‘ r ˜2(¯§¿vy¬LZdEsóWÔé~[ô–nIEİ{7,c s8;dotNK©æù¿ªG¸¡~àÚŞüuÜvCÒûùÁÖš©G…Úãˆ¥£¹7;á=	LÎÑØ9ĞªŠŠÙ>>F¦H9_3ûP\µïRÉ®ïA±™ãPìtä*WìşŒUáK…rÏÌL{(ªÍ=&„ ¡'eèVóK®†Ê+Q¾÷Ï¯*’µé’$Zh*`¼Ÿx7I6E5õÅI¶A&a5‡Fß6Á’}‹[6E6â”M¤zœ“¢óˆĞ#˜Q‹O˜,vQ½sùgQÅtÛŒò°Rƒí
+!äÈ÷xèÈhîï#Z|Úrâ¹øX”n»¼;”ü}Æ"	¸Î7ørD
+ÎïGåzg^WË¾Ö>åÉ £Ü%R‡+ë	±,Ù+ÙÄ	3*dœr³¹ZÌë½ÀÓ…;¬©÷¸!q&ô<ömÅ/äï%ÕïŸ×äÏà+!ò–éİmNQIƒßÿK£î!¾²¿qœ,DŞÃ§ù%Ëì9¹¸ÎeNe×_\´àgA¼:4Šï›6Z£•4HPò#xxJ¨!Ô´FÔ“Å;}¢)ÙRx6âmt È¸U¿
+)Ùë‹_=¦~}+Oá)ñ´üÆ‰+0N‚–ã¦¹i/¢òprÛlGÀÔ©f5Ä3o}=”ç¿ßbv´Ü·w¢9€3Ã½ş×µä/”Ÿ®’@ÿzËòzì®¥]ÉGÊG;¼oˆû˜nydS=ú7‹tƒÜ`È°êM‚S¥H”£ã7l³ûã±…4…\î-œà»H85¸>J¡«¦ÅÄïÇå¤U§ù\ÁÄ°Ò¤ìc#BHp÷’Qhÿ±j`|²uâo’|ü*[’	H8ëQ¨v£†ÀéÚ7xTh¡Vc[l››’£~¤ò“¹Şè½#W.ğ/)ÜI‡ÏI&á3¨’‚èXş©Å÷<!µï~µ^G²è'å7£âA<{çƒÌîú‚¤×§')+uC–¾Û·qJOÚŒ*À‰l|ß&aD0ë.q^¯6æ5ã­İ“TL
+JÃB-0p‚k¾’«Ââ˜B—QAÀ<©FÎ;›­PÓÌ½«½]#È
+wûç`/Í¿ÒvBú.ó!SíòÀÃ©wûŞ¸²'™Ÿ]ßtÜ•“èöùÄçJí²æ;ÿ7ÊâG-=Êò²^™–»è&ï¹Ó†½ş•HN}ÄËCDa®²ãªj[€M0—ˆ„„ÂDf:ĞcÑÚŸ=/‘#0‰³+æCrŒ`ƒ…ş˜İ³¨ñ³j‡ØRøÎ™o'›èÿ`h¾sâèdaÛË T¶óÚ$G&ÍÍ„’VU,?V×“ONñ!÷ÕÛÎûvzØ6ŒÛ¡æÍYôÙõÚ)ÔôÑª,"×ÍÊP%’´«”·ÀÈ&¨h²ê‡İ¦?éÔ‘O|˜Gˆ…ĞÌV‰K«T$…RDLz8“Ã!Óë²ş¨N¨Á.Ö¹	Øã[D“Ã¬
+ºie¼AîvŞŠºPz…ì ­EÎ?âü4ˆaív)`€?¦‡+÷"f/WË! Õ#ğó¼åŒw6(î¨CåJeæ´–°I<ÉÌjâº*	R‹âÕb~ğèÏş’Ï1øüDb^7z$©-.éÕèÚW_2ÃBUåäÔ-.!Ùşxù<Şc³~:¬n¤˜Lí}â“BéG?™ç½r—ªÄ¬È­Ÿ¶È­iÖI³»²•ñãa“À3JŞ©HÄ®d8$Ò£
+ø¸K)Z'NôvÅœÅÈ–Tà»™Òµ;¼İzÈKÔ2 xÏ.âÔK §$ ¡â;‚3^.L2º~	¹]«tùı…òwÀy2şk9šÜw4ĞëiS÷ƒ¡®pbÑŒíÏ*…“c»âşÛ?˜€[æ‰„”Ş¬¶EFèx)^®´¸Ğ}øIƒXN¬M¡fù¨h¦íòó¹4C˜{¿<7ÉF?hä!Šİ:Ú¯xåü“f~¹… fî%nG1-¿êC2íA`Ûê!/Å]õÕvÉ÷Ôˆ_WéïjWmfX¾Êll›øAí[-İDÍ£B$­Ô²)›¹)sˆÂŠv"1¨øĞø^@yœôÆ)È[mÉE˜$°åO(üˆ/Ìç976^ ¿ğJáJba;“<•ĞTYùÅ°¯¦T+kª	ç×ônÊ[,÷¾Ä3ˆöÑ1hâZÆÃƒj"ø¸O 6úÅ½‚M:óßÇnÁçnrÎ„„õÎäVBé	Ê|Îf.+¢`!¸/ÉS6î‚\ï‰şÃOÂ”+õr—IšÑ’œMŠMw/á1äQÀX@F=ÙBûB“oˆoÏ—v0G¬JêE9Å¾Ún8T™„ı9tÛ#I¤ÜÁìÑà÷û‡ê˜ı“Ë´kNééÉ,9ôïZ†üãFŒ’.z£‡¤›¥~TïoÌIYRÜdu°i%‹´ÛÔ×MCøÀ€xùÒ2I´
+NÊÎ¿¨<¥ëÄ!æpŸ¥ÓêAïØÈ&g·#ÏºÃ«Mw“>™UyXJ ö8ÚŒ¢ø;Ğ8‹Şâ=ñÉeahLÉèún]Ô×˜uìÑJ›PÒ?t>Õá
+×ŠcÆÂzÌ.p1«D†WñøÉó›ÔõVDb¦-«]¡ñøÇâæ=ÆçËTXéS¶qSÈ‚òN;(®q ±á¡RòÜ× _]cÌs]±hWåvÁŸ­u%c¥ç|ÌÖ±ï~¸RçI1$BšKÁIk–iŸ²:`¥g-³ƒ
+ñ‚µÇÏ/j÷¼–“$€"şÿ"Æ(ùàÁóyÑb¥ëäD•fs0ÉÆ¹	u‹5˜áY+ùzOÂ¨¼ùª ™¾qPMFÓ<¼¢{ÛNŠoƒ^£œÒü2–*¯‰#£ßX½„£a2-¶^îGê©@RF`i&¾”0 'íöåÒ"æëıL13ëè-eúXâ¬V)É¾'9—yùÏÔ§ä~üN¼„g³—D¶Ä1FøÁ×ôÎ¤^£YË¬Æ†Å˜xß£O0„Dm~®w¿{^†/?ìCVìYŸòŸ_ıoŸ2dÏ9ï‡5wyZ¾JíÕ.õe$½N×?ğÖYHEMLíë Ø‡·™--‘‘KÕ€äìyôúÉŠ¾l d—ğJ4.îgã+3¼¬·t~	ÃS•ŸEÂŸü“«"ÿµMXòÍ.Cì*&fÂ¼…ŸæÀ×½Í„Ä¤éb¥$CìWê­q84'ëÌ"·Áøï
+OÑdõOÏ¾íWõLæir¹ï¼"Hk8ĞìqÜN%ËP•É=K%‡x)¤»9ú›wÅBE%-sbı%05õftNa¼şaÛ7\ ;*{§ÍM>÷‹õz°“ Ò!¹ºüœVhúk«VİW–Ó«6©Ï"ÛuLğ¯°~aÇ™=¢Êÿñ’jB”n‘: ”,zñşn´S–ôç|b[š'¹³Šîš2œ—ô¼ô:Ë©*–ûåĞ„7“ÍZ°]ép¦†ÄÈãõ3i+ß!¹¡ú€cÒ7ğôÅÖ˜86-Rô©ãÄ¬ê0/ğd©æk»Es’ÑŸY]&.Ç.Ü”ã·~Ø¶¢…,:o!™<æ§~Ãt÷Ğ¿ır®èXÂô4É[›EQw›qäoìdåÑ‰<ó­O_é€MàÊ™üÏ|cüG÷ªÿ`ˆ@&ŠG Z|»½åiâó?eÎ1Õ%X€ÿñåÕñ¹*6óÃø¨X—œeê¤Ü@"X
+Fkã}ñà­—Ä[dÆîµP‹Ñ}1p›šÒÔ©ÔR¸E^`K“ä6JzEi$LÂ²şİ0t¡76;Å@z'åP0Å	şô"Ğ©ÃI²@%ïVôê•/œä´‚¦R‹6"Û^ynŒt›ëÌDÁE¹K..êE¤ÆU¥jNQE´+kÿò€eÿ]M”ÕÌâvßÍ®›—•Q?¾ş‹($¹c	®}ëÂ¾UWìÚ$=²t”Š¾SÏ¹ÇYäsÀ¢T]¢>öÑ" UŸÌ¶E„Ûìöµ£Â±¢²Zß„Û“’¾©{>ØM;¡Ä•Ğ¤»¥ØsI7jeèœ|,½[DQôÛâVxiĞ:øĞªï‰«„I¶ÙùªBNÀwğ?çK5II~Ì×/Õ­”‹¬n­ÃÅ9JDs¼çbaÏ0 Ø~	ÜE¥–çmˆD=¯06¾íËOåH;İxJLl™ŒÒ•CŸ6,ÈôÃø_BúJN´K\çày™‘m¢{Ï9º~·Œ«(ˆÍÓûÒ›ƒ`*æC¯	+ÛÈ-úˆ(?Jœ¶‰\•|YÎşşêfSœ³>úñÕ“Èß¬“ú'3ßğtzzü¶Bˆ²­4	Í‹Øî®;ÈôFàóSB„xö UÉ›¬6ÜÊ‰)Â–¨šÂù‚‡q¥j¦<§È
+x<·&`îP…±=Ñ#	¯-CÚ»Í%Û]%ß6¶Ñ9`G3®7V†ÈÂÄ\+¿Ñ£LÊzqfcXª¢]µ	¼Îpí(İsê?´*ä^~eo¦ÙûÙH{/ gÅ·c(Mä×ì¸J	·üFŒ[«¿"ëîSzjeTfàe™SpF¡µÆ_.ØUaöuÔ¡ûY_*¸`ıÜ
+½ùQ¥ò;ê¸‰2fŸš¾×µLê%}n£‚Ö›FqH¸æËì‘|—î9ì)UÑšì_B7ÊQ9È«VÈÍÅÏS*.ñÚ.5÷²)(Èæˆ˜'ã1Œô5ÓáIêıEá¿Êà=Ôy¦ZnÌ‡Å›´dE@-'å‰V3‚İ .„H¼’ûŸ_­Äë ·Ñ`£u4PD—§Á­ô-Ó BÌÆ×l^s® B·ÌnŞHıà Ã‚:nŞÜ8KQÑê³à®ïŸ´W$¼‰‡¬$ÄÉÍa,i1a÷1f‚…yBŒÅ)o¤„I„ÉÎ×œ	ÑßÚºÑõ#¥¸ã«Ã
+ŠØÛ-³}½8ro 3úŸ¢´¼ÑoŠ„­©`ØËÎÕ¬éŸ¡F;@É;çO->,ów:0Q¥b2]'«GÍ+ˆY»Ôs™ĞĞx‹®Ğª¿¬KÄ;´AçbÒ¹Y<¬IÏ‘fİ¼š'	É&??xxç^˜¯êÅºÏLŠ ‚“{"î
+(³‚áàôb>½½œ]íÛ‚õƒ`]‘ÖxÓéóo‰ìK´›ŠÈL¨Çm6‹@­JÑK«á‡Ü7.ü[¥ëwVFa-··ørlyÖˆ4@­Êû wÿj¸»*÷"¸¾;g¬Nv’>wfW\ÍµèmWVg'E
+¿õ÷Ğ¬{Ï`ÓOÊ"ó©›ŸsĞæ÷ùä-Q4¯²ÜF>èk)m‡€Ë`ĞºN'unŸN›ÕéÍå´T}üƒ‹Jm¼û\VÌ0ÒëßÒëóyÁ-R‡<bxŒb9ÓÃ^}—Î‘¢]¾øÜ~Ö­“êªÖÅèTè@öı‚rî•å9“,-ÒJ4ÆÀ/oùuÔ\²Z„Ûæ=Ú]ã4{*šNâ6R,0Æì~å‡âJ#›Î¶éQ½t:`>A #âÍS½ÕîP{ºı@şKsÒÃ)šÄ‚K\ÙÅöF³`[W*8¬–†DÈX–ÌPÎ`]÷í¡ZÒY3*9ªı¸‚;ÜU7øĞ=öêIÖ£¸BQŞZ=·î½ß*›©$¿$•óvdßréb:Áv“ÕQ–*%æ²¿äÒñ±¨ÛH'=G¹Jºüº¿&¨¸‹#í+’Çü	gH×k¥uĞ,`Óñ‡‹áiğ^X›ö£r.¹»rïş¦B×k=Ø¾HFë»İéÔî½[XÕƒ-˜ÿ÷ š´QB©i8ôŠÙ²äÚ¤äÚjHÊÑ¨u²ÀµX¿b4|Xî+‡™+Æ”=³ê¥_©}¿§k¾bu2ƒ;´†À äpG-¡ã×oQvµÑk€w…²_°òïwÃÇ‹°óV0ÔPœ#Ï‰÷ç®~/I‚ãúûÅã¶âÒXì½§dq[föôµ]`Ş×şCÛÏ5±¤ĞÛºunl³İ+à·o‘Ş%tÓ)GÏ”ı7åx\‘,'Ş[€BWlê3¬m^^LßÒ@Õx)P¾œYÂ’dı£CgŒöšGGÅ*•DíiÃE=Ñ¾tc¼Yâ¾aeÊCoìÑU"Ô9¹á»˜ÕÒˆØ®˜ˆ¶é„"#ØõÒÍë	÷‚[ÑTää1Í6rªH(²åqX?côûë°²•ª“ÀjfIŒéÕo¬8è&X~®€¡íšğ5’œ)¢/ˆ8¿ Ï@TÃŠ-ÕÈh.”aº½=K"Åäiswá;şR»ZˆBğ2^¿c¶ó7›F¨hù€M	¨²`kó~"ÏÊã½‰R#VôšdÛÄ;ı0nê…Ø94}Â*°Î@ôx–^éVÍlMH¾°Uihp6§ç[»óŸgvÒ½¸;…¼;Ù.GîÜ ¹õ­‰5ò‚Ïur¢ N•)œ_¦ á'î®ê|Ş¦¶yÔ©ı”ÊSkË¹û0"sÈAÏ•é"y·ìO#«#VÅ×jÔësÆçÆVã4ƒC8Aç$ÄÛ;Íù…nÛ¶@yøş{ı{"y	?³û:™9\ëXvn%ºëòšx+¯¿SA6l~'ÕË®Ó»tF ·Fcß_•íy¯0P½ŒRáš
+-«‡è6/H3½»Ny€é2GÍ‘´óğNÿrqPğ°Á²äE	*UÈÎ5AÈ¶ëÅÎùİ'´_·›Î5&IIO6r¸gq¥~¼§‰C“,T³ËF6Å±dÅ!«¨Äğ©ÇXÑ/í˜«+-*Ø‚Áç9{š(´ò9X†¿.\½ “?(ÅD>e§¬á„‚,®ê§ƒ“;?¼Ó+!É«‰¦ma–hœıøjıŒ²€1àŠX(Ş­o]IÀ2#Ò€ÓğºıäAü¬T¼„bJ¦£kŞ”#¼C—·q ƒæ5¹ÅŒ Cî‹3K03°„…¡‡/—PKF6·&\Ã3ËUË"nO ¶ëİ@ĞíîTvSLŞŒ¨™ğ«àT÷‹9ïŞmìÊÑ·TúdéKkÎeÜf‰whÊse³Ñ6)yqeà${SX±Î#‘Ò{Ê²ŸÑSyØ^_ \\g+"äI™Áàœe`Ğî^yîêÍ}nŸ”ŸJÌ9F‹´s%×Œtø	’Òõ×|>óâº<™hL{J®6œqŒaîKh3cq0şBl¿á°œxì½Ë²ä™ä÷Ö÷"¡”PôA2o¥0ˆ ÒY’%´EaÆR«º/­¹Èô{4ômÁÅw¹z6‹KÄÈ}D=]ñ™^:åßˆ şÖY¤R³¨„#ód=›¶ô“€÷ø˜Ãë8Ïëÿ"gÏı¡kJ„Ç ¬õÜZkµÌîŸĞPsÛú{Ø¡ÉyãÓi´c!*K{—[æ«y(?(2¢K›}oÓ\›Fìºv¡l~ˆıônƒƒRäâ§}(ŒpSåw¢RGœUoäEÚ@0C‚ÜME“ÎğV
+ÎşCÉŠ¯J6´ÆH>Òœ³˜]zÚÖcÆÏ¶Ø1É;ãx‹Ò]ÜößD#>= =‹ŞîÏà@ËAf§Z4–ä	2û;{º¨(`ó•,Â‘”è82Äã(Yšs²BÀsUÚ4ïÔe+m…5À;|‹e·BäDë¿m@1ÕŞLù`ÅÉÁàÈ…É
+Õ|±±Ãú½ßş«~¥Æ‘ä³aà†ÀF’×†\5æ7gr7^~F‡êE«í‚»Q­Ûö;Áıë%UÄæµâLDšA.Åöê¥–¨aÔ'â1ğYCÉ£š XE·_MÃ×€0$-ZıÂ;—Â†¤¿Ğ«:d	¸ş´v9ve,úŞ!Ì7ÂçŒ.^PI?h?'JDUMô&–RS‹2"Å,ÒF4Ü-¢ÒÚ`˜|MgI¿Ò|_as¹›wkH²|ƒ9Õ¤×Õy—åĞs¹î÷È_gµMÕ7zIR>vŞaß3uÿœûñ]NŒ|°"&}ßØjú¯–¬Ø}úÁÿæ]ªĞöU¬íÙ5:½­g€G6MŸ‘Û[9Ò¬4³¹³mj›rö²*Ê·)ÓğóÇ9kŞ‚ëbjå¾ñåQ„/G¶011UAny×‡x¥WW/us€ÀÕúaH„¦Dô ÙaYyåmàï:!Èş4d¡OPo¤áİÖÉ;9Û'¨m5|ó@;€s˜Óæ^2·±MÜåÈOü„‚ìãs[˜æ^e¡ølÖ}UD)Eà,Ïº˜±kûÂ/TB iïY„#áş/²’I<‹(ì2eª#şÍ[‚Ó¨\¼·Ç¶u”Hßnü¶äêCTÀß\–<Ü\Ìp:mÆ»,¤«÷µÉâP\¼.6†¸	T(m`X.hw§êóæWaø „çºÕ¸¸é¿ØMiĞ²Ü²RÁ%MNWÎÊ¤­$wrSl8®:a@„†Cr#³=¬60£Ô²$µW[üÄ7ÍG¢§/(±·hw (¡ašòm¶CO{_¯NGœç1]‘É¥İ<RÇ##qXàuÒ

@@ -1,0 +1,72 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>角色新增</title>
+    <script src="~/Scripts/vue.js"></script>
+    <script src="~/Scripts/axios.js"></script>
+</head>
+<body>
+    <form action="~/Role/AddByAdminister" method="post">
+        <div>
+            <div>
+                <label>角色名字：</label>
+                <div>
+                    <input type="text" name="Name" id="Name">
+                </div>
+            </div>
+            <div>
+                <label>角色描述：</label>
+                <div>
+                    <input type="text" name="Describe" id="Describe">
+                </div>
+            </div>
+            <div>
+                <label>是否删除：</label>
+                <div style="display:inline-block">
+                    <label>不删除</label><input type="radio" name="IsDeleted" value="false" checked />
+                    <label>删  除</label><input type="radio" name="IsDeleted" value="true" />
+                </div>
+            </div>
+            <div id="ShowModule">
+                <label>模块：</label>
+                <div v-for="module in modules" style="display:inline-block">
+                    <span>{{module.ModuleName}}</span><input type="checkbox" name="ModuleIds" v-bind:value="module.Id" />
+                </div>
+            </div>
+            <div>
+                <div>
+                    <input type="submit" value="新增">
+                    <input type="reset" value="重置">
+                </div>
+            </div>
+        </div>
+    </form>
+    <script>
+        var vm = new Vue({
+            el: "#ShowModule",
+            mounted() {
+                this.Init();
+            },
+            data: {
+                modules:[]
+            },
+            methods: {
+                Init: function () {
+                    axios.post('@Url.Action("GetModules", "Role")').then((response => {
+                        this.modules = [];
+                        for (var i = 0; i < response.data.length; i++) {
+                            this.modules.push(response.data[i]);
+                        }
+                    })).catch(function (response) {
+                        alert(response);
+                    });
+                }
+            }
+        });
+    </script>
+</body>
+</html>

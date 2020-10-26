@@ -1,0 +1,121 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>模块新增</title>
+    <link rel="stylesheet" href="~/layui/css/layui.css" media="all">
+    <script src="~/layui/layui.js" charset="utf-8"></script>
+    <script src="~/Jquery/jquery-3.3.1.js"></script>
+    <script>
+        layui.use(['element', 'form'], function () {
+            var element = layui.element;
+            var form = layui.form;
+            var layer = layui.layer;
+            //下拉框选择事件监听
+            form.on('select(college)', function (data) {
+                //选中的控制器名字
+                var controllerName = $("select[name=ControllerName").val();
+                //显示控制器对应的action
+                //actionSelect(controllerName);
+                $.ajax({
+                    url: "/Module/GetActions",
+                    type: "post",
+                    dataType: "json",
+                    data: { ControlName: controllerName },
+                    success: function (result) {
+                        //清除actionNames的子节点
+                        var div = document.getElementById("actionNames");
+                        while (div.hasChildNodes()) {
+                            div.removeChild(div.firstChild);
+                        }
+                        //新增actionNames下的子节点
+                        for (var i = 0; i < result.length - 1; i++) {
+                            var _actionName = '<input type="checkbox" class="layui-input" name="actionName" id="actionName" lay-filter="level" value="' + result[i] + '" title="' + result[i] + '">';
+                            $("#actionNames").append(_actionName);
+                        }
+                        form.render();
+                    },
+                    error: function () {
+                        window.location.href = '/General/Error';
+                    }
+                });
+            });
+            //监听提交
+            form.on('submit(formDemo)', function (data) {
+                var ModuleName = $("#ModuleName").val();
+                var Describe = $("#Describe").val();
+                var ControllerName = $("#ControllerName").val();
+                var chk_value = [];//定义一个数组
+                $('input[name="actionName"]:checked').each(function () {//遍历每一个名字为nodes的复选框，其中选中的执行函数
+                    chk_value.push($(this).val());//将选中的值添加到数组chk_value中
+                });
+                var actionNames = chk_value.join(",").split(",");
+                $.ajax({
+                    url: "/Module/Add",
+                    type: "post",
+                    data: { ModuleName: ModuleName, Describe: Describe, ControllerName: ControllerName, actionNames: actionNames },
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.State == "success") {
+                            alert("模块新增成功");
+                        }
+                        else {
+                            alert("模块新增失败");
+                        }
+                    },
+                    error: function () {
+                        window.location.href = '/General/Error';
+                    }
+                });
+                return false;
+            });
+        });
+    </script>
+</head>
+<body>
+    <form class="layui-form">
+        <div class="layui-form-item">
+            <label class="layui-form-label">模块名字：</label>
+            <div class="layui-input-block">
+                <input type="text" name="ModuleName" id="ModuleName" required lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">模块描述：</label>
+            <div class="layui-input-block">
+                <input type="text" name="Describe" id="Describe" required lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">控制器名字：</label>
+            <div class="layui-input-block">
+                <select type="text" name="ControllerName" id="ControllerName" ay-verify="required" lay-filter="college" class="layui-select">
+                    <option value="0">=请选择=</option>
+                    @{
+                        foreach (var entity in Model)
+                        {
+                            <option value=@entity>@entity</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">操作名称：</label>
+            <div class="layui-input-block" id="actionNames" name="actionNames" lay-filter="action">
+                @*<input type="hidden" name="actionName" title="">*@
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </form>
+</body>
+</html>

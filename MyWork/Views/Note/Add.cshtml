@@ -1,0 +1,41 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>日志新增</title>
+</head>
+<body>
+    <form action="~/Note/Add" method="post">
+        <div>
+            <div>
+                <label>日志名字：</label>
+                <div>
+                    <input type="text" name="Name" id="Name">
+                </div>
+            </div>
+            <div>
+                <label>日志内容：</label>
+                <div>
+                    <textarea name="Detail"></textarea>
+                </div>
+            </div>
+            <div>
+                <label>是否删除：</label>
+                <div style="display:inline-block">
+                    <label>不删除</label><input type="radio" name="IsDeleted" value="false" checked />
+                    <label>删  除</label><input type="radio" name="IsDeleted" value="true" />
+                </div>
+            </div>
+            <div>
+                <div>
+                    <input type="submit" value="新增" />
+                    <input type="reset" value="重置" />
+                </div>
+            </div>
+        </div>
+    </form>
+</body>
+</html>

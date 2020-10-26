@@ -1,0 +1,45 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>模块的内容</title>
+    <link rel="stylesheet" href="/layui/css/layui.css" media="all">
+</head>
+<body>
+    <table class="layui-table">
+        <colgroup>
+            <col width="150">
+            <col width="200">
+            <col>
+        </colgroup>
+        <thead>
+            <tr>
+                <td>Id</td>
+                <td>ModuleId</td>
+                <td>模块名字</td>
+                <td>模块描述</td>
+                <td>创建时间</td>
+                <td>是否删除</td>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                foreach (var entity in Model)
+                {
+            <tr>
+                <td>@entity.Id</td>
+                <td>@entity.ModuleId</td>
+                <td>@entity.ModuleName</td>
+                <td>@entity.Describe</td>
+                <td>@entity.CreateTime</td>
+                <td>@entity.IsDeleted</td>
+            </tr>
+                }
+            }
+        </tbody>
+    </table>
+</body>
+</html>

@@ -1,0 +1,75 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>模块编辑</title>
+    <script src="~/Scripts/vue.js"></script>
+    <script src="~/Scripts/axios.js"></script>
+</head>
+<body>
+    <form action="/Module/Update" method="post">
+        <div>
+            <div>
+                <input type="hidden" name="Id" value=@Model.ModuleDTO.Id />
+            </div>
+        </div>
+        <div>
+            <label>模块名字：</label>
+            <div>
+                <input type="text" name="ModuleName" value=@Model.ModuleDTO.ModuleName />
+            </div>
+        </div>
+        <div>
+            <label>模块描述：</label>
+            <div>
+                <input type="text" name="Describe" value=@Model.ModuleDTO.Describe />
+            </div>
+        </div>
+        <div>
+            <label>控制器名字：</label>
+            <div>
+                <input type="text" name="ControllerName" id="ControllerName" value=@Model.ModuleDTO.ControllerName />
+            </div>
+        </div>
+        <div style="display:inline-block">
+            <label>是否删除：</label>
+            <div>
+                @{ if (@Model[0].IsDeleted)
+                    {
+                        <label>不删除</label><input type="radio" name="IsDeleted" value="false" />
+                        <label>删  除</label><input type="radio" name="IsDeleted" value="true" checked />
+                    }
+                    else
+                    {
+                        <label>不删除</label><input type="radio" name="IsDeleted" value="false" checked />
+                        <label>删  除</label><input type="radio" name="IsDeleted" value="true" />
+                    }
+                }
+            </div>
+        </div>
+        <div>
+            <label>操作名称：</label>
+            @{
+                foreach (var ModuleDTO in Model.ModuleDTOs)
+                {
+                    if (@ModuleDTO.IsChoosed)
+                    {
+                        <input type="checkbox" id="actionName" name="actionName" value=@ModuleDTO.ActionName checked />@ModuleDTO.ActionName
+                    }
+                    else
+                    {
+                        <input type="checkbox" id="actionName" name="actionName" value=@ModuleDTO.ActionName />@ModuleDTO.ActionName
+                    }
+                }
+            }
+        </div>
+        <div>
+            <input type="submit" value="修改" />
+            <input type="reset" value="重置" />
+        </div>
+    </form>
+</body>
+</html>

@@ -1,0 +1,73 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>日志修改</title>
+    <link rel="stylesheet" href="~/layui/css/layui.css" media="all">
+    <script src="~/layui/layui.js" charset="utf-8"></script>
+    <script src="~/Jquery/jquery-3.3.1.js"></script>
+</head>
+<body>
+    <form class="layui-form">
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <input type="hidden" name="Id" id="Id" value=@Model.Id required lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+                <input type="hidden" name="User_Id" id="User_Id" value=@Model.User_Id required lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">日志名字：</label>
+            <div class="layui-input-block">
+                <input type="text" name="Name" id="Name" value=@Model.Name required lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">日志内容：</label>
+            <div class="layui-input-block">
+                <textarea placeholder="请输入日志内容" class="layui-textarea" name="Detail" id="Detail" value=@Model.Detail></textarea>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </form>
+    <script>
+        $("#Detail").val("@Model.Detail");
+        layui.use('form', function () {
+            var form = layui.form;
+            //监听提交
+            form.on('submit(formDemo)', function (obj) {
+                var Name = $("#Name").val();
+                var Id = $("#Id").val();
+                var User_Id = $("#User_Id").val();
+                var Detail = $("#Detail").val();
+                $.ajax({
+                    url: "/Note/Update",
+                    type: "post",
+                    data: { Name: Name, Detail: Detail, Id: Id, User_Id: User_Id },
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.State == "success") {
+                            alert("笔记修改成功");
+                        }
+                        else {
+                            alert("笔记修改失败");
+                        }
+                    },
+                    error: function () {
+                        window.location.href = '/General/Error';
+                    }
+                });
+                return false;
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>用户管理</title>
+    <script src="~/Scripts/vue.js"></script>
+    <script src="~/Scripts/axios.js"></script>
+    <script>
+        function Add() {
+            window.open("/User/Add")
+        }
+    </script>
+</head>
+<body>
+    <form action="~/User/Index" method="post">
+        <div style="display:inline-block">
+            <div style="display:inline-block">
+                <label>用户名：</label><input type="text" name="Name" />
+            </div>
+            <div style="display:inline-block">
+                <label>创建时间：</label><input type="datetime" name="CreateTimeFrom" />--<input type="datetime" name="CreateTimeTo" />
+            </div>
+            <div style="display:inline-block">
+                <label>是否软删除：</label><label>已删除</label><input type="radio" value="true" name="IsDeleted" /><label>未删除</label><input type="radio" value="false" name="IsDeleted" checked />
+            </div>
+            <div style="display:inline-block">
+                <input type="submit" value="查询" />
+                <input type="button" value="新增" onclick="Add()" />
+            </div>
+        </div>
+    </form>
+    <table id="usershow">
+        <tr>
+            <td>Id</td>
+            <td>用户名</td>
+            <td>密码</td>
+            <td>身高</td>
+            <td>描述</td>
+            <td>创建时间</td>
+            <td>删除标记</td>
+            <td>真删除</td>
+            <td>软删除</td>
+            <td>修改</td>
+            <td>角色查看</td>
+            <td>权限查看</td>
+        </tr>
+        @{
+            if (Model != null)
+            {
+                foreach (var user in Model)
+                {
+                <tr>
+                    <td>@user.Id</td>
+                    <td>@user.Name</td>
+                    <td>@user.Password</td>
+                    <td>@user.Height</td>
+                    <td>@user.Describe</td>
+                    <td>@user.CreateTime</td>
+                    <td>@user.IsDeleted</td>
+                    <td><a href="/User/Delete?Id=@user.Id">真删除</a></td>
+                    <td><a href="/User/MaskDelete?Id=@user.Id">软删除</a></td>
+                    <td><a href="/User/Update?Id=@user.Id">修改</a></td>
+                    <td><a href="/User/ShowUserRole?Id=@user.Id">角色查看</a></td>
+                    <td><a href="/User/ShowUserRoleModule?Id=@user.Id">权限查看</a></td>
+                </tr>
+                }
+            }
+        }
+    </table>
+</body>
+</html>

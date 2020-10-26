@@ -1,0 +1,48 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>我的日志</title>
+    <link rel="stylesheet" href="/layui/css/layui.css" media="all">
+</head>
+<body>
+    <table class="layui-table">
+        <colgroup>
+            <col width="150">
+            <col width="200">
+            <col>
+        </colgroup>
+        <thead>
+            <tr>
+                <td>Id</td>
+                <td>日志名字</td>
+                <td>创建时间</td>
+                <td>删除标记</td>
+                <td>修改</td>
+                <td>删除</td>
+            </tr>
+        </thead>
+        <tbody>
+            @{
+                if (Model != null)
+                {
+                    foreach (var entity in Model)
+                    {
+                        <tr>
+                            <td>@entity.Id</td>
+                            <td>@entity.Name</td>
+                            <td>@entity.CreateTime</td>
+                            <td>@entity.IsDeleted</td>
+                            <td><a href="~/Note/Update?Id=@entity.Id">修改</a></td>
+                            <td><a href="~/Note/Delete?Id=@entity.Id">删除</a></td>
+                        </tr>
+                    }
+                }
+            }
+        </tbody>
+    </table>
+</body>
+</html>

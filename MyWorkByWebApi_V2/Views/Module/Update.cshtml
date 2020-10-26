@@ -1,0 +1,104 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>模块编辑</title>
+    <link rel="stylesheet" href="~/layui/css/layui.css" media="all">
+    <script src="~/layui/layui.js" charset="utf-8"></script>
+    <script src="~/Jquery/jquery-3.3.1.js"></script>
+</head>
+<body>
+    <form class="layui-form">
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <input type="hidden" name="ModuleId" id="ModuleId" value=@Model.ModuleDTO.ModuleId required lay-verify="required" placeholder="" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">模块名字：</label>
+            <div class="layui-input-block">
+                <input type="text" name="ModuleName" id="ModuleName" value=@Model.ModuleDTO.ModuleName required lay-verify="required" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        < <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">模块描述：</label>
+            <div class="layui-input-block">
+                <input type="text" name="Describe" id="Describe" value=@Model.ModuleDTO.Describe required lay-verify="required" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">控制器名字：</label>
+            <div class="layui-input-block">
+                <input type="text" name="ControllerName" id="ControllerName" value=@Model.ModuleDTO.ControllerName required lay-verify="required" autocomplete="off" class="layui-input" readonly>
+            </div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">操作名称：</label>
+            @{
+                foreach (var ModuleDTO in Model.ModuleDTOs)
+                {
+                    if (@ModuleDTO.IsChoosed)
+                    {
+                        <input type="checkbox" id="actionName" name="actionName" value=@ModuleDTO.ActionName checked />@ModuleDTO.ActionName
+                    }
+                    else
+                    {
+                        <input type="checkbox" id="actionName" name="actionName" value=@ModuleDTO.ActionName />@ModuleDTO.ActionName
+                    }
+                }
+            }
+        </div>
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </form>
+    <script>
+        layui.use('form', function () {
+            var form = layui.form;
+            //监听提交
+            form.on('submit(formDemo)', function (obj) {
+                var ModuleId = $("#ModuleId").val();
+                var ModuleName = $("#ModuleName").val();
+                var ControllerName = $("#ControllerName").val();
+                var Describe = $("#Describe").val();
+                var ModuleDTO = {
+                    ModuleId: ModuleId,
+                    ModuleName: ModuleName,
+                    ControllerName: ControllerName,
+                    Describe: Describe
+                };
+                var chk_value = [];//定义一个数组
+                $('input[name="actionName"]:checked').each(function () {//遍历每一个名字为nodes的复选框，其中选中的执行函数
+                    chk_value.push($(this).val());//将选中的值添加到数组chk_value中
+                });
+                var ActionNames = chk_value.join(",").split(",");
+                $.ajax({
+                    url: "/Module/Update",
+                    type: "post",
+                    data: { ModuleDTO:ModuleDTO, ActionNames: ActionNames },
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.State == "success") {
+                            alert("模块修改成功");
+                        }
+                        else {
+                            alert("模块修改失败");
+                        }
+                    },
+                    error: function () {
+                        window.location.href = '/General/Error';
+                    }
+                });
+                return false;
+            });
+        });
+    </script>
+</body>
+</html>

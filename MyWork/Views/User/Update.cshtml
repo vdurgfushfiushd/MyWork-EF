@@ -1,0 +1,78 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>用户编辑</title>
+    <script src="~/Jquery/jquery-3.3.1.js"></script>
+</head>
+<body>
+    <form action="~/User/Update" method="post">
+        <div>
+            <input type="hidden" name="Id" value="@Model[0].Id" />
+        </div>
+        <div>
+            <label>用户名：</label>
+            <div>
+                <input type="text" name="Name" value="@Model[0].Name" /><br />
+            </div>
+        </div>
+        <div>
+            <label>密  码：</label>
+            <div>
+                <input type="text" name="Password" value="@Model[0].Password" /><br />
+            </div>
+        </div>
+        <div>
+            <label>身  高：</label>
+            <div>
+                <input type="text" name="Height" value="@Model[0].Height" /><br />
+            </div>
+        </div>
+        <div>
+            <label>描  述：</label>
+            <div>
+                <input type="text" name="Describe" value="@Model[0].Describe" /><br />
+            </div>
+        </div>
+        <div style="display:inline-block">
+            <label>是否删除：</label>
+            <div>
+                @{ if (@Model[0].IsDeleted)
+                    {
+                        <label>不删除</label><input type="radio" name="IsDeleted" value="false" />
+                        <label>删  除</label><input type="radio" name="IsDeleted" value="true" checked />
+                    }
+                    else
+                    {
+                        <label>不删除</label><input type="radio" name="IsDeleted" value="false" checked />
+                        <label>删  除</label><input type="radio" name="IsDeleted" value="true" />
+                    }
+                }
+            </div>
+        </div>
+        <div>
+            <label>角  色：</label>
+            @{
+                foreach (var userrole in Model)
+                {
+                    if (@userrole.IsChoosed)
+                    {
+                        <span>@userrole.RoleName</span><input type="checkbox" name="RoleIds" value="@userrole.RoleId" checked />
+                    }
+                    else
+                    {
+                        <span>@userrole.RoleName</span> <input type="checkbox" name="RoleIds" value="@userrole.RoleId" />
+                    }
+                }
+            }<br />
+        </div>
+        <div>
+            <input type="submit" />
+            <input type="reset" />
+        </div>
+    </form>
+</body>
+</html>

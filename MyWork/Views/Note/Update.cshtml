@@ -1,0 +1,54 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>日志修改</title>
+</head>
+<body>
+    <form action="~/Note/Update" method="post">
+        <div>
+            <div>
+                <input type="hidden" name="Id" id="Id" value=@Model.Id />
+                <input type="hidden" name="User_Id" id="User_Id" value=@Model.User_Id />
+            </div>
+        </div>
+        <div>
+            <label>日志名字：</label>
+            <div>
+                <input type="text" name="Name" id="Name" value=@Model.Name />
+            </div>
+        </div>
+        <div>
+            <label>日志内容：</label>
+            <div>
+                <textarea name="Detail" id="Detail" value=@Model.Detail></textarea>
+            </div>
+        </div>
+        <div style="display:inline-block">
+            <label>是否删除：</label>
+            <div>
+                @{ if (@Model[0].IsDeleted)
+                    {
+                        <label>不删除</label><input type="radio" name="IsDeleted" value="false" />
+                        <label>删  除</label><input type="radio" name="IsDeleted" value="true" checked />
+                    }
+                    else
+                    {
+                        <label>不删除</label><input type="radio" name="IsDeleted" value="false" checked />
+                        <label>删  除</label><input type="radio" name="IsDeleted" value="true" />
+                    }
+                }
+            </div>
+        </div>
+        <div>
+            <div>
+                <input type="submit" value="修改" />
+                <input type="reset" value="重置" />
+            </div>
+        </div>
+    </form>
+</body>
+</html>

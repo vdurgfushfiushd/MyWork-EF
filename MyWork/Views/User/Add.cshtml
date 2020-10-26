@@ -1,0 +1,82 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>用户新增</title>
+    <script src="~/Scripts/vue.js"></script>
+    <script src="~/Scripts/axios.js"></script>
+</head>
+<body>
+    <form action="~/User/AddByAdminister" method="post">
+        <div>
+            <div>
+                <label>用户名：</label>
+                <div>
+                    <input type="text" name="Name" />
+                </div>
+            </div>
+            <div>
+                <label>密  码：</label>
+                <div>
+                    <input type="text" name="Password" />
+                </div>
+            </div>
+            <div>
+                <label>身  高：</label>
+                <div>
+                    <input type="text" name="Height" />
+                </div>
+            </div>
+            <div>
+                <label>描  述：</label>
+                <div>
+                    <input type="text" name="Describe" />
+                </div>
+            </div>
+            <div>
+                <label>是否删除：</label>
+                <div style="display:inline-block">
+                    <label>不删除</label><input type="radio" name="IsDeleted" value="false" checked />
+                    <label>删  除</label><input type="radio" name="IsDeleted" value="true" />
+                </div>
+            </div>
+            <div id="ShowRole">
+                <label>角  色：</label>
+                <div v-for="role in roles" style="display:inline-block">
+                    <span>{{role.Name}}</span><input type="checkbox" name="RoleIds" v-bind:value="role.Id" />
+                </div>
+            </div>
+            <div>
+                <input type="submit" value="新增" />
+                <input type="reset" value="重置" />
+            </div>
+        </div>
+    </form>
+    <script>
+        var vm = new Vue({
+            el: "#ShowRole",
+            mounted() {
+                this.Init();
+            },
+            data: {
+                roles:[]
+            },
+            methods: {
+                Init: function () {
+                    axios.post('@Url.Action("GetRoles", "User")').then((response => {
+                        this.roles = [];
+                        for (var i = 0; i < response.data.length; i++) {
+                            this.roles.push(response.data[i]);
+                        }
+                    })).catch(function (response) {
+                        alert(response);
+                    });
+                }
+            }
+        });
+    </script>
+</body>
+</html>
